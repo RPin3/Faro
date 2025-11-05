@@ -2,8 +2,10 @@
 
 #pragma once
 
+
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "MadnessWidget.h"
 #include "Logging/LogMacros.h"
 #include "FaroCharacter.generated.h"
 
@@ -32,6 +34,8 @@ class AFaroCharacter : public ACharacter
 	UCameraComponent* FollowCamera;
 	
 protected:
+	
+	virtual void BeginPlay() override;
 
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, Category="Input")
@@ -92,5 +96,51 @@ public:
 
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+protected:
+	UPROPERTY(ReplicatedUsing = OnRep_Madness, VisibleAnywhere, BlueprintReadOnly, Category = "Madness")
+	float Madness;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Madness")
+	float MadnessDecreaseRate;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Madness")
+	float MadnessDecreaseInterval;
+
+	UPROPERTY(ReplicatedUsing=OnRep_bIsMad, BlueprintReadOnly, Category="Madness")
+	bool bIsMad;
+
+	FTimerHandle MadnessTimerHandle;
+
+	UFUNCTION()
+	void IncreaseMadness();
+
+	UFUNCTION()
+	void HandleMadnessEmpty();
+
+	UFUNCTION()
+	void OnRep_bIsMad();
+
+	UFUNCTION()
+	void OnRep_Madness();
+
+public:
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	UFUNCTION(BlueprintPure, Category="Madness")
+	float GetMadness() const { return Madness; }
+
+	UFUNCTION(BlueprintCallable, Category="Madness")
+	void StartMadnessTimer();
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<UUserWidget> MadnessWidgetClass;
+
+	UPROPERTY()
+	UMadnessWidget* MadnessWidgetInstance;
+
+protected:
+
+
 };
 

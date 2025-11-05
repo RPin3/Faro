@@ -11,6 +11,42 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Faro.h"
+#include "MadnessWidget.h"
+#include "Blueprint/UserWidget.h"
+#include "Net/UnrealNetwork.h"
+
+void AFaroCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (HasAuthority())
+	{
+		StartMadnessTimer();
+	}
+
+	if (IsLocallyControlled())
+	{
+		if (APlayerController* PC = Cast<APlayerController>(GetController()))
+		{
+			if (MadnessWidgetClass)
+			{
+				UUserWidget* WidgetInstance = CreateWidget<UUserWidget>(PC, MadnessWidgetClass);
+				if (UMadnessWidget* MadnessWidget = Cast<UMadnessWidget>(WidgetInstance))
+				{
+					MadnessWidget->AddToViewport();
+					MadnessWidget->InitializeWidget(this);
+
+					MadnessWidgetInstance = MadnessWidget;
+				}
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("MadnessWidgetClass no asignado en el editor."));
+			}
+		}
+	}
+}
+
 
 AFaroCharacter::AFaroCharacter()
 {
@@ -46,8 +82,15 @@ AFaroCharacter::AFaroCharacter()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
 
-	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
-	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+	//Madness Locura para los que no saben ingles
+	Madness = 100.f;
+	MadnessDecreaseRate = 1.f;
+	MadnessDecreaseInterval = 0.5f;
+	bIsMad = false;
+
+	//Aqui ya esta activa la replicacion primer aviso
+	bReplicates = true;
+
 }
 
 void AFaroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -130,4 +173,67 @@ void AFaroCharacter::DoJumpEnd()
 {
 	// signal the character to stop jumping
 	StopJumping();
+}
+
+void AFaroCharacter::StartMadnessTimer()
+{
+	if (GetWorld())
+	{
+		GetWorldTimerManager().SetTimer(
+			MadnessTimerHandle,
+			this,
+			&AFaroCharacter::IncreaseMadness,
+			MadnessDecreaseInterval,
+			true
+		);
+	}
+}
+
+
+
+void AFaroCharacter::IncreaseMadness()
+{
+	if (!HasAuthority()) return;
+
+	Madness -= MadnessDecreaseRate;
+	Madness = FMath::Clamp(Madness, 0.f, 100.f);
+
+	OnRep_Madness();
+
+	if (Madness <= 0.f && !bIsMad)
+	{
+		HandleMadnessEmpty();
+	}
+}
+
+void AFaroCharacter::HandleMadnessEmpty()
+{
+	if (!HasAuthority()) return;
+
+	bIsMad = true;
+	OnRep_bIsMad();
+}
+
+void AFaroCharacter::OnRep_bIsMad()
+{
+
+	UE_LOG(LogTemp, Warning, TEXT("%s se ha vuelto loco."), *GetName());
+	//Aqui van las cosas que sucederan al volverte loco
+}
+
+void AFaroCharacter::OnRep_Madness()
+{
+	if (IsLocallyControlled() && MadnessWidgetInstance)
+	{
+		MadnessWidgetInstance->UpdateMadness();
+	}
+}
+
+void AFaroCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AFaroCharacter, bIsMad);
+	DOREPLIFETIME(AFaroCharacter, Madness);
+	
 }
