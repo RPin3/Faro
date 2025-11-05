@@ -14,6 +14,7 @@
 #include "Interact.h"
 #include "MadnessWidget.h"
 #include "Blueprint/UserWidget.h"
+#include "Interfaces/DisableObject.h"
 #include "Net/UnrealNetwork.h"
 
 void AFaroCharacter::BeginPlay()
@@ -65,6 +66,7 @@ void AFaroCharacter::BeginPlay()
 	}
 
 	
+	
 }
 
 
@@ -102,7 +104,7 @@ AFaroCharacter::AFaroCharacter()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
 
-	//Madness Locura para los que no saben ingles
+	//Madness Locura para los que no saben ingles XD
 	Madness = 100.f;
 	MadnessDecreaseRate = 1.f;
 	MadnessDecreaseInterval = 0.5f;
@@ -266,7 +268,33 @@ void AFaroCharacter::ReciveInformation_Implementation(AActor* object)
 void AFaroCharacter::StartSkillCheck_Implementation()
 {
 	SkillCheckWidgetInstance->SetVisibility(ESlateVisibility::Visible);
-	SkillCheckWidgetInstance->NewSkillCheck();
+	if (SkillCheckWidgetInstance->inProcces == false)
+	{
+		SkillCheckWidgetInstance->playerActor = this;
+		GetCharacterMovement()->DisableMovement();
+		SkillCheckWidgetInstance->NewSkillCheck();
+	}
+	
+}
+
+void AFaroCharacter::DowngradeMadness_Implementation()
+{
+	Madness -= 20.0f;
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Me vuelvo loco"));
+	}
+}
+
+void AFaroCharacter::CompletSkillCheck_Implementation()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("ObjetoTerminado"));
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	//Interfaz para poder desabilitar el objeto que completo
+	if (objectToInteract->GetClass()->ImplementsInterface(UDisableObject::StaticClass()))
+	{
+		IDisableObject::Execute_ObjectComplete(objectToInteract);
+	}
 }
 
 void AFaroCharacter::Interact()

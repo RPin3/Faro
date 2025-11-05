@@ -4,12 +4,14 @@
 
 
 #include "CoreMinimal.h"
+#include "DownMadness.h"
 #include "Interact.h"
 #include "GameFramework/Character.h"
 #include "MadnessWidget.h"
 #include "SendInformation.h"
 #include "SkillCheck.h"
 #include "StartNewSkillCheck.h"
+#include "SuccessSkillChecks.h"
 #include "Logging/LogMacros.h"
 #include "FaroCharacter.generated.h"
 
@@ -25,7 +27,7 @@ DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
  *  Implements a controllable orbiting camera
  */
 UCLASS(abstract)
-class AFaroCharacter : public ACharacter, public ISendInformation, public IStartNewSkillCheck
+class AFaroCharacter : public ACharacter, public ISendInformation, public IStartNewSkillCheck, public IDownMadness, public ISuccessSkillChecks
 {
 	GENERATED_BODY()
 
@@ -154,12 +156,17 @@ public:
 
 	virtual void StartSkillCheck_Implementation();
 
+	virtual void DowngradeMadness_Implementation();
+
+	virtual void CompletSkillCheck_Implementation();
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Interfaces")
 	AActor* objectToInteract;
 
 	UFUNCTION(BlueprintCallable, Category="Interact")
 	void Interact();
-	
 
+	
+	
 };
 

@@ -4,22 +4,24 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "StartNewSkillCheck.generated.h"
+#include "DisableObject.generated.h"
 
 // This class does not need to be modified.
 UINTERFACE()
-class UStartNewSkillCheck : public UInterface
+class UDisableObject : public UInterface
 {
 	GENERATED_BODY()
 };
 
-class FARO_API IStartNewSkillCheck
+/**
+ * 
+ */
+class FARO_API IDisableObject
 {
 	GENERATED_BODY()
 
-	
+	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Comunicación")
-	void StartSkillCheck();
+	void ObjectComplete();
 };

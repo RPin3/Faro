@@ -4,22 +4,22 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "StartNewSkillCheck.generated.h"
+#include "SuccessSkillChecks.generated.h"
 
-// This class does not need to be modified.
+
 UINTERFACE()
-class UStartNewSkillCheck : public UInterface
+class USuccessSkillChecks : public UInterface
 {
 	GENERATED_BODY()
 };
 
-class FARO_API IStartNewSkillCheck
+
+class FARO_API ISuccessSkillChecks
 {
 	GENERATED_BODY()
 
 	
 public:
-
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Comunicación")
-	void StartSkillCheck();
+	void CompletSkillCheck();
 };

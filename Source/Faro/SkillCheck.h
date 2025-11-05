@@ -16,6 +16,10 @@ class FARO_API USkillCheck : public UUserWidget
 public:
 	
 
+	UPROPERTY(CallInEditor)
+	bool inProcces;
+
+	
 	UPROPERTY(EditAnywhere)
 	int currentSkillCheck;
 
@@ -54,6 +58,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	USoundBase* SkillCheckSoundSuccess;
+
+	UPROPERTY()
+	AActor* playerActor;
 
 private:
 	FTimerHandle moveTimer;

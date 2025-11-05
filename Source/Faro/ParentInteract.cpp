@@ -90,6 +90,8 @@ void AParentInteract::Tick(float DeltaTime)
 
 void AParentInteract::Interact_Implementation()
 {
+	if (isComplete == false)
+	{
 	if (GEngine)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Interactuaron conmigo"));
@@ -99,5 +101,12 @@ void AParentInteract::Interact_Implementation()
 	{
 		IStartNewSkillCheck::Execute_StartSkillCheck(PlayerTemp);
 	}
+	}
+}
+
+void AParentInteract::ObjectComplete_Implementation()
+{
+	widget->SetHiddenInGame(true);
+	isComplete = true;
 }
 

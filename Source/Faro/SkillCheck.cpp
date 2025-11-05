@@ -2,6 +2,9 @@
 
 
 #include "SkillCheck.h"
+
+#include "DownMadness.h"
+#include "SuccessSkillChecks.h"
 #include "TimerManager.h"
 #include "Components/Image.h"
 
@@ -44,6 +47,8 @@ void USkillCheck::NewSkillCheck()
 		skillCheckPoint = FMath::FRandRange(0.0f,1.0f);
 		SkillCheck->GetDynamicMaterial()->SetScalarParameterValue(FName("PositionRotaton"),skillCheckPoint);
 
+
+		inProcces = true;
 		toleranceMin = skillCheckPoint*-360.0f-20.0f+20.0f;
 		toleranceMax = skillCheckPoint*-360.0f-20.0f-20.0f;
 	}
@@ -73,15 +78,29 @@ void USkillCheck::ComprobateSkillCheck()
 			PlaySound(SkillCheckSoundSuccess);
 			currentSkillCheck = 1;
 			NewSkillCheck();
+			if (playerActor->GetClass()->ImplementsInterface(USuccessSkillChecks::StaticClass()))
+			{
+				ISuccessSkillChecks::Execute_CompletSkillCheck(playerActor);
+			} 
 			this->SetVisibility(ESlateVisibility::Hidden);
+			inProcces = false;
+			
 		}
 		else
 		{
 			PlaySound(SkillCheckSoundFail);
+			if (playerActor->GetClass()->ImplementsInterface(UDownMadness::StaticClass()))
+			{
+				IDownMadness::Execute_DowngradeMadness(playerActor);
+			}
 		}
 	}
 	else
 	{
 		PlaySound(SkillCheckSoundFail);
+		if (playerActor->GetClass()->ImplementsInterface(UDownMadness::StaticClass()))
+		{
+			IDownMadness::Execute_DowngradeMadness(playerActor);
+		}
 	}
 }

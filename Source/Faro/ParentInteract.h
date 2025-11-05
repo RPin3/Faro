@@ -8,10 +8,11 @@
 #include "Components/WidgetComponent.h"
 #include "GameFramework/Actor.h"
 #include "Components/StaticMeshComponent.h"
+#include "Interfaces/DisableObject.h"
 #include "ParentInteract.generated.h"
 
 UCLASS()
-class FARO_API AParentInteract : public AActor, public IInteract
+class FARO_API AParentInteract : public AActor, public IInteract, public IDisableObject
 {
 	GENERATED_BODY()
 
@@ -39,7 +40,12 @@ public:
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* mesh;
 
+	UPROPERTY()
+	bool isComplete = false;
+
 	void Interact_Implementation();
+
+	void ObjectComplete_Implementation();
 
 private:
 	AActor* PlayerTemp;

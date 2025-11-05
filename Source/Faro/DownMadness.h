@@ -4,22 +4,24 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "StartNewSkillCheck.generated.h"
+#include "DownMadness.generated.h"
 
 // This class does not need to be modified.
 UINTERFACE()
-class UStartNewSkillCheck : public UInterface
+class UDownMadness : public UInterface
 {
 	GENERATED_BODY()
 };
 
-class FARO_API IStartNewSkillCheck
+/**
+ * 
+ */
+class FARO_API IDownMadness
 {
 	GENERATED_BODY()
 
 	
 public:
-
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Comunicación")
-	void StartSkillCheck();
+	void DowngradeMadness();
 };
