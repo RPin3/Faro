@@ -46,6 +46,15 @@ public:
 	UFUNCTION(CallInEditor)
 	void MoveSkillCheck();
 
+	UFUNCTION(BlueprintCallable, category = "Interact")
+	void ComprobateSkillCheck();
+
+	UPROPERTY(EditDefaultsOnly)
+	USoundBase* SkillCheckSoundFail;
+
+	UPROPERTY(EditDefaultsOnly)
+	USoundBase* SkillCheckSoundSuccess;
+
 private:
 	FTimerHandle moveTimer;
 

@@ -63,3 +63,25 @@ void USkillCheck::MoveSkillCheck()
 		flecha->SetRenderTransformAngle(middleAngle);
 	}
 }
+
+void USkillCheck::ComprobateSkillCheck()
+{
+	if (middleAngle <= toleranceMin)
+	{
+		if (middleAngle >= toleranceMax)
+		{
+			PlaySound(SkillCheckSoundSuccess);
+			currentSkillCheck = 1;
+			NewSkillCheck();
+			this->SetVisibility(ESlateVisibility::Hidden);
+		}
+		else
+		{
+			PlaySound(SkillCheckSoundFail);
+		}
+	}
+	else
+	{
+		PlaySound(SkillCheckSoundFail);
+	}
+}
