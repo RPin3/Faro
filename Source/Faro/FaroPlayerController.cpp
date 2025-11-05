@@ -59,3 +59,6 @@ void AFaroPlayerController::SetupInputComponent()
 		}
 	}
 }
+
+
+

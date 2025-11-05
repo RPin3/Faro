@@ -11,6 +11,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Faro.h"
+#include "Interact.h"
 #include "MadnessWidget.h"
 #include "Blueprint/UserWidget.h"
 #include "Net/UnrealNetwork.h"
@@ -43,8 +44,27 @@ void AFaroCharacter::BeginPlay()
 			{
 				UE_LOG(LogTemp, Warning, TEXT("MadnessWidgetClass no asignado en el editor."));
 			}
+
+			if (SkillCheckClass)
+			{
+				UUserWidget* WidgetInstance = CreateWidget<UUserWidget>(PC, SkillCheckClass);
+				if (USkillCheck* SkillCheckWidget = Cast<USkillCheck>(WidgetInstance))
+				{
+					SkillCheckWidget->AddToViewport();
+					//SkillCheckWidget->InitializeWidget(this);
+
+					SkillCheckWidgetInstance = SkillCheckWidget;
+				}
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("MadnessWidgetClass no asignado en el editor."));
+			}
+			SkillCheckWidgetInstance->SetVisibility(ESlateVisibility::Hidden);
 		}
 	}
+
+	
 }
 
 
@@ -237,3 +257,23 @@ void AFaroCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 	DOREPLIFETIME(AFaroCharacter, Madness);
 	
 }
+
+void AFaroCharacter::ReciveInformation_Implementation(AActor* object)
+{
+	objectToInteract = object;
+}
+
+void AFaroCharacter::StartSkillCheck_Implementation()
+{
+	SkillCheckWidgetInstance->SetVisibility(ESlateVisibility::Visible);
+	SkillCheckWidgetInstance->NewSkillCheck();
+}
+
+void AFaroCharacter::Interact()
+{
+	if (objectToInteract->GetClass()->ImplementsInterface(UInteract::StaticClass()))
+	{
+		IInteract::Execute_Interact(objectToInteract);
+	}
+}
+
