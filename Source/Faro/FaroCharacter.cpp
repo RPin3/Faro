@@ -228,6 +228,17 @@ void AFaroCharacter::IncreaseMadness()
 	}
 }
 
+void AFaroCharacter::OnRep_DecreaseMadness(float Amount)
+{
+	if (IsLocallyControlled())
+	{
+		Madness += Amount;
+		Madness = FMath::Clamp(Madness, 0.f, 100.f);
+
+		MadnessWidgetInstance->UpdateMadness();
+	}
+}
+
 void AFaroCharacter::HandleMadnessEmpty()
 {
 	if (!HasAuthority()) return;
@@ -291,6 +302,16 @@ void AFaroCharacter::CompletSkillCheck_Implementation()
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("ObjetoTerminado"));
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 	//Interfaz para poder desabilitar el objeto que completo
+	if (objectToInteract->GetClass()->ImplementsInterface(UDisableObject::StaticClass()))
+	{
+		IDisableObject::Execute_ObjectComplete(objectToInteract);
+	}
+}
+
+void AFaroCharacter::TakePill_Implementation(float Num)
+{
+	OnRep_DecreaseMadness(Num);
+	
 	if (objectToInteract->GetClass()->ImplementsInterface(UDisableObject::StaticClass()))
 	{
 		IDisableObject::Execute_ObjectComplete(objectToInteract);

@@ -92,15 +92,15 @@ void AParentInteract::Interact_Implementation()
 {
 	if (isComplete == false)
 	{
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Interactuaron conmigo"));
-	}
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Interactuaron conmigo"));
+		}
 
-	if (PlayerTemp->GetClass()->ImplementsInterface(UStartNewSkillCheck::StaticClass()))
-	{
-		IStartNewSkillCheck::Execute_StartSkillCheck(PlayerTemp);
-	}
+		if (PlayerTemp->GetClass()->ImplementsInterface(UStartNewSkillCheck::StaticClass()))
+		{
+			IStartNewSkillCheck::Execute_StartSkillCheck(PlayerTemp);
+		}
 	}
 }
 

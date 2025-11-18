@@ -29,6 +29,8 @@ public:
 	
 protected:
 	virtual void BeginPlay() override;
+	
+	AActor* PlayerTemp;
 
 public:
 	virtual void Tick(float DeltaTime) override;
@@ -43,10 +45,7 @@ public:
 	UPROPERTY()
 	bool isComplete = false;
 
-	void Interact_Implementation();
+	virtual void Interact_Implementation();
 
 	void ObjectComplete_Implementation();
-
-private:
-	AActor* PlayerTemp;
 };
