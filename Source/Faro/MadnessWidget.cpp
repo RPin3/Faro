@@ -23,7 +23,7 @@ void UMadnessWidget::InitializeWidget(AFaroCharacter* Character)
 			UpdateTimerHandle,
 			this,
 			&UMadnessWidget::UpdateMadness,
-			0.1f, // actualización cada 0.1s
+			0.1f, 
 			true
 		);
 	}

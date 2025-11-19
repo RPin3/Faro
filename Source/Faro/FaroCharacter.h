@@ -124,9 +124,6 @@ protected:
 
 	UFUNCTION()
 	void HandleMadnessEmpty();
-	
-	UFUNCTION()
-    void OnRep_DecreaseMadness(float Amount);
 
 	UFUNCTION()
 	void OnRep_bIsMad();
