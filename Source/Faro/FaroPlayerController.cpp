@@ -31,6 +31,8 @@ void AFaroPlayerController::BeginPlay()
 		}
 
 	}
+
+	
 }
 
 void AFaroPlayerController::SetupInputComponent()
@@ -59,6 +61,7 @@ void AFaroPlayerController::SetupInputComponent()
 		}
 	}
 }
+
 
 
 

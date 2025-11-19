@@ -79,7 +79,7 @@ void AParentInteract::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* 
 void AParentInteract::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 

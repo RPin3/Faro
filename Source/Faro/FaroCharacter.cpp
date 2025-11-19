@@ -11,10 +11,12 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Faro.h"
+#include "FaroPlayerController.h"
 #include "Interact.h"
 #include "MadnessWidget.h"
 #include "Blueprint/UserWidget.h"
 #include "Interfaces/DisableObject.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
 void AFaroCharacter::BeginPlay()
@@ -62,9 +64,29 @@ void AFaroCharacter::BeginPlay()
 				UE_LOG(LogTemp, Warning, TEXT("MadnessWidgetClass no asignado en el editor."));
 			}
 			SkillCheckWidgetInstance->SetVisibility(ESlateVisibility::Hidden);
+
+			if (winScreenClass)
+			{
+				UUserWidget* WidgetInstance = CreateWidget<UUserWidget>(PC, winScreenClass);
+				if (UWinScreen* winScreenWidget = Cast<UWinScreen>(WidgetInstance))
+				{
+					winScreenWidget->AddToViewport();
+					//SkillCheckWidget->InitializeWidget(this);
+
+					WinScreenInstance = winScreenWidget;
+				}
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("MadnessWidgetClass no asignado en el editor."));
+			}
+			WinScreenInstance->SetVisibility(ESlateVisibility::Hidden);
+			
 		}
 	}
 
+	
+		
 	
 	
 }
@@ -268,7 +290,10 @@ void AFaroCharacter::ReciveInformation_Implementation(AActor* object)
 
 void AFaroCharacter::StartSkillCheck_Implementation()
 {
-	SkillCheckWidgetInstance->SetVisibility(ESlateVisibility::Visible);
+	if (IsLocallyControlled() && SkillCheckWidgetInstance)
+	{
+		SkillCheckWidgetInstance->SetVisibility(ESlateVisibility::Visible);
+	}
 	if (SkillCheckWidgetInstance->inProcces == false)
 	{
 		SkillCheckWidgetInstance->playerActor = this;
@@ -313,6 +338,9 @@ void AFaroCharacter::CompletSkillCheck_Implementation()
 	{
 		IDisableObject::Execute_ObjectComplete(objectToInteract);
 	}
+
+	ObjectsComplete+=1;
+	ComprobateWin();
 }
 
 
@@ -324,7 +352,7 @@ void AFaroCharacter::TakePill_Implementation(float Num)
 		Madness = FMath::Clamp(Madness, 0.f, 100.f);
 	}
 
-	// Actualiza HUD en clientes
+	
 	OnRep_Madness();
 
 	if (objectToInteract->GetClass()->ImplementsInterface(UDisableObject::StaticClass()))
@@ -340,5 +368,16 @@ void AFaroCharacter::Interact()
 	{
 		IInteract::Execute_Interact(objectToInteract);
 	}
+}
+
+void AFaroCharacter::ComprobateWin()
+{
+	//Mover el valor del if dependiendo de cuantos cosas hay que reparar por el mapa
+	if (ObjectsComplete >= 2)
+	{
+		WinScreenInstance->SetVisibility(ESlateVisibility::Visible);
+		OnWinChecked();
+	}
+	
 }
 

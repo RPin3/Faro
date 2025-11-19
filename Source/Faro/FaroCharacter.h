@@ -12,6 +12,7 @@
 #include "SkillCheck.h"
 #include "StartNewSkillCheck.h"
 #include "SuccessSkillChecks.h"
+#include "WinScreen.h"
 #include "Interfaces/PlayerInteractions.h"
 #include "Logging/LogMacros.h"
 #include "FaroCharacter.generated.h"
@@ -146,12 +147,18 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSubclassOf<UUserWidget> SkillCheckClass;
 
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<UUserWidget> winScreenClass;
+
 	
 	UPROPERTY()
 	UMadnessWidget* MadnessWidgetInstance;
 
 	UPROPERTY()
 	USkillCheck* SkillCheckWidgetInstance;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UWinScreen* WinScreenInstance;
 	
 	virtual void ReciveInformation_Implementation(AActor* object) override;
 
@@ -169,7 +176,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Interact")
 	void Interact();
 
-	
-	
+	UPROPERTY(VisibleAnywhere)
+	int ObjectsComplete;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnWinChecked();
+
+private:
+	void ComprobateWin();
 };
 

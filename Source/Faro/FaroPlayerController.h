@@ -34,8 +34,8 @@ protected:
 	virtual void SetupInputComponent() override;
 
 	
-	
-	
 
 
+public:
+	
 };
