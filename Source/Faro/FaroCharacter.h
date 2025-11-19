@@ -176,11 +176,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Interact")
 	void Interact();
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	int ObjectsComplete;
 
 	UFUNCTION(BlueprintImplementableEvent)
+	void AddObjectComplete();
+	
+	UFUNCTION(BlueprintImplementableEvent)
 	void OnWinChecked();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnDefeat();
 
 private:
 	void ComprobateWin();

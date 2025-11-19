@@ -264,6 +264,7 @@ void AFaroCharacter::OnRep_bIsMad()
 
 	UE_LOG(LogTemp, Warning, TEXT("%s se ha vuelto loco."), *GetName());
 	//Aqui van las cosas que sucederan al volverte loco
+	OnDefeat();
 }
 
 void AFaroCharacter::OnRep_Madness()
@@ -339,7 +340,7 @@ void AFaroCharacter::CompletSkillCheck_Implementation()
 		IDisableObject::Execute_ObjectComplete(objectToInteract);
 	}
 
-	ObjectsComplete+=1;
+	AddObjectComplete();
 	ComprobateWin();
 }
 
@@ -372,12 +373,10 @@ void AFaroCharacter::Interact()
 
 void AFaroCharacter::ComprobateWin()
 {
-	//Mover el valor del if dependiendo de cuantos cosas hay que reparar por el mapa
-	if (ObjectsComplete >= 2)
+	if (ObjectsComplete >= 4)
 	{
 		WinScreenInstance->SetVisibility(ESlateVisibility::Visible);
 		OnWinChecked();
 	}
-	
 }
 
